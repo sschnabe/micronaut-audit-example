@@ -1,0 +1,7 @@
+jackson:
+  serialization:
+    indentOutput: true
+
+logger:
+  levels:
+    io.kokuwa.micronaut.audit: TRACE

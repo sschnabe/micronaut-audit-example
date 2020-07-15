@@ -1,0 +1,30 @@
+micronaut:
+  security:
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
+              jws-algorithm: HS256
+  http:
+    client:
+      logger-name: io.kokuwa.micronaut.audit.TestClient
+      read-timeout: 10m
+
+endpoints:
+  all:
+    port: ${random.port}
+
+jackson:
+  serialization:
+    indentOutput: true
+
+logger:
+  levels:
+    io.kokuwa: TRACE
+    io.micronaut: INFO
+    io.micronaut.data: TRACE
+    io.micronaut.http.client: INFO
+    org.flywaydb: INFO
+    org.testcontainers: INFO

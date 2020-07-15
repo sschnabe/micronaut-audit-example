@@ -1,0 +1,66 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+
+  ## see https://docs.micronaut.io/2.0.0/guide/index.html#staticResources
+  router:
+    static-resources:
+      openapi:
+        paths: classpath:openapi
+        mapping: /openapi/**
+
+  ## see https://docs.micronaut.io/2.0.0/guide/index.html#cors
+  server:
+    cors:
+      enabled: true
+      default:
+        allowedMethods:
+        - GET
+
+  ## see https://micronaut-projects.github.io/micronaut-security/2.0.0/guide/index.html
+  security:
+    enabled: true
+    intercept-url-map:
+      - pattern: /openapi/spec.yaml
+        access: isAnonymous()
+      - pattern: /endpoints/**
+        access: isAnonymous()
+      - pattern: /**
+        access: isAuthenticated()
+
+## see https://docs.micronaut.io/2.0.0/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    port: 8090
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+
+## see https://docs.micronaut.io/2.0.0/guide/index.html#jsonBinding
+jackson:
+  bean-introspection-module: true
+  serialization:
+    writeDatesAsTimestamps: false
+
+## see https://micronaut-projects.github.io/micronaut-sql/2.1.0/guide/#jdbc
+datasources:
+  default:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:${datasources.default.database};DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_LOWER=TRUE
+    database: metric-balancing
+    username: micronaut
+    password: changeMe
+    dialect: H2
+
+## see https://micronaut-projects.github.io/micronaut-flyway/2.0.0/guide/index.html#additionalConfig
+flyway:
+  datasources:
+    default:
+      locations: classpath:database/${datasources.default.dialect}
+
+## adjust logging
+logger:
+  levels:
+    com.zaxxer.hikari: WARN
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"

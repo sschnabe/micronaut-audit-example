@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Micronaut Audit Example
+  description: TODO
+  version: ${project.version}
+components:
+  schemas:
+    ModelUuid:
+      type: string
+      format: uuid
+    ModelName:
+      type: string
+      maxLength: 100
+    ModelCreate:
+      type: object
+      required:
+      - name
+      properties:
+        uuid:
+          $ref: '#/components/schemas/ModelUuid'
+        name:
+          $ref: '#/components/schemas/ModelName'
+    ModelUpdate:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          $ref: '#/components/schemas/ModelName'
+    ModelDisplay:
+      type: object
+      required:
+      - uuid
+      - name
+      - created
+      - updated
+      - author
+      properties:
+        uuid:
+          $ref: '#/components/schemas/ModelUuid'
+        name:
+          $ref: '#/components/schemas/ModelName'
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        author:
+          type: string
+          maxLength: 100
+  parameters:
+    ModelUuid:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ModelUuid'
+  responses:
+    Unauthorized:
+      description: 'Access token not found or invalid.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- BearerAuth: []
+paths:
+  /model:
+    get:
+      summary: Get models.
+      operationId: getModels
+      tags:
+      - model
+      responses:
+        200:
+          description: List of models.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelDisplay'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      summary: Create model.
+      operationId: createModel
+      tags:
+      - model
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelCreate'
+      responses:
+        201:
+          description: Created model.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelDisplay'
+        400:
+          description: Bad request.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        409:
+          description: UUID already in use.
+  /model/{uuid}:
+    parameters:
+    - $ref: '#/components/parameters/ModelUuid'
+    get:
+      summary: Get model by uuid.
+      operationId: getModelByUuid
+      tags:
+      - model
+      responses:
+        200:
+          description: Model.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelDisplay'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: Model not found.
+    post:
+      summary: Update tenant.
+      operationId: updateModel
+      tags:
+      - model
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdate'
+      responses:
+        200:
+          description: Model updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelDisplay'
+        400:
+          description: Bad request.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: Model not found.
+    delete:
+      summary: Delete model.
+      operationId: deleteModel
+      tags:
+      - model
+      responses:
+        204:
+          description: Model deleted.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: Model not found.

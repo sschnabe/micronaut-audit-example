@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.kokuwa</groupId>
+		<artifactId>maven-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath />
+	</parent>
+
+	<groupId>io.kokuwa.micronaut</groupId>
+	<artifactId>micronaut-audit-example</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>Micronaut Audit Example</name>
+	<description>TODO</description>
+	<url>https://github.com/kokuwaio/micronaut-audit-example</url>
+	<inceptionYear>2020</inceptionYear>
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/kokuwaio/micronaut-audit-example</url>
+		<connection>scm:git:https://github.com/kokuwaio/micronaut-audit-example.git</connection>
+		<developerConnection>scm:git:https://github.com/kokuwaio/micronaut-audit-example.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/kokuwaio/micronaut-audit-example/issues</url>
+	</issueManagement>
+
+	<properties>
+
+		<!-- ===================================================================== -->
+		<!-- ============================= Libaries ============================== -->
+		<!-- ===================================================================== -->
+
+		<version.ch.qos.logback>1.2.3</version.ch.qos.logback>
+		<version.com.mysql.connector>8.0.20</version.com.mysql.connector>
+		<version.io.kokuwa.micronaut.codegen>1.1.0</version.io.kokuwa.micronaut.codegen>
+		<version.io.micronaut>2.0.0</version.io.micronaut>
+		<version.io.micronaut.data>1.1.1</version.io.micronaut.data>
+		<version.org.mapstruct>1.3.1.Final</version.org.mapstruct>
+		<version.org.postgresql>42.2.14</version.org.postgresql>
+		<version.org.testcontainers>1.14.3</version.org.testcontainers>
+
+		<!-- ===================================================================== -->
+		<!-- ============================== Docker =============================== -->
+		<!-- ===================================================================== -->
+
+		<docker.mysql>5.7</docker.mysql>
+		<docker.postgres>9.6</docker.postgres>
+
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- micronaut -->
+			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-bom</artifactId>
+				<version>${version.io.micronaut}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut.data</groupId>
+				<artifactId>micronaut-data-processor</artifactId>
+				<version>${version.io.micronaut.data}</version>
+			</dependency>
+
+			<!-- persistence -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${version.com.mysql.connector}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${version.org.postgresql}</version>
+			</dependency>
+
+			<!-- build -->
+			<dependency>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct</artifactId>
+				<version>${version.org.mapstruct}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${version.ch.qos.logback}</version>
+			</dependency>
+
+			<!-- test -->
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>mysql</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- persistence -->
+		<dependency>
+			<groupId>io.micronaut.data</groupId>
+			<artifactId>micronaut-data-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.sql</groupId>
+			<artifactId>micronaut-jdbc-hikari</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.flyway</groupId>
+			<artifactId>micronaut-flyway</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- build -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-test-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- generate sources from openapi spec -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<generatorName>micronaut</generatorName>
+					<inputSpec>${project.basedir}/src/main/resources/openapi/spec.yaml</inputSpec>
+					<apiPackage>io.kokuwa.micronaut.audit.rest</apiPackage>
+					<invokerPackage>io.kokuwa.micronaut.audit</invokerPackage>
+					<modelNameSuffix>VO</modelNameSuffix>
+					<output>${project.build.directory}</output>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>io.kokuwa.micronaut</groupId>
+						<artifactId>micronaut-openapi-codegen</artifactId>
+						<version>${version.io.kokuwa.micronaut.codegen}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- add compiler processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${version.org.mapstruct}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut.data</groupId>
+							<artifactId>micronaut-data-processor</artifactId>
+							<version>${version.io.micronaut.data}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- configure jar with lib and main class -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>io.kokuwa.micronaut.audit.Application</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- run surefire tests with multiple configurations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<reportNameSuffix>h2</reportNameSuffix>
+						</configuration>
+					</execution>
+					<execution>
+						<id>postgres-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<environmentVariables>
+								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
+							</environmentVariables>
+							<reportNameSuffix>postgres</reportNameSuffix>
+						</configuration>
+					</execution>
+					<execution>
+						<id>mysql-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<environmentVariables>
+								<MICRONAUT_ENVIRONMENTS>mysql</MICRONAUT_ENVIRONMENTS>
+							</environmentVariables>
+							<reportNameSuffix>mysql</reportNameSuffix>
+							<skipExec>true</skipExec>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<failIfNoTests>true</failIfNoTests>
+				</configuration>
+			</plugin>
+
+			<!-- copy project dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>micronaut-lib</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<silent>true</silent>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

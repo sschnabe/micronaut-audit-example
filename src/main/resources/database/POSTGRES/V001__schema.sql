@@ -1,0 +1,10 @@
+CREATE TABLE model (
+	id SERIAL NOT NULL,
+	uuid UUID NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	created TIMESTAMP NOT NULL,
+	updated TIMESTAMP NOT NULL,
+	author VARCHAR(100) NOT NULL,
+	CONSTRAINT pk_model PRIMARY KEY (id),
+	CONSTRAINT uq_model_uuid UNIQUE (uuid)
+);
